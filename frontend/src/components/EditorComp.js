@@ -40,7 +40,7 @@ function EditorComp() {
   async function handleRun() {
     if (code.trim() === "") return;
     setOutput("executing...");
-    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/run`, {
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}run`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
