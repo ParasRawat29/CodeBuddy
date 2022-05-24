@@ -24,7 +24,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 });
 
-console.log(path.resolve(__dirname, "..", "frontend", "build", "index.html"));
 app.post("/run", async (req, res, next) => {
   const { language = "py", code } = req.body;
   if (code == "") {
@@ -104,6 +103,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(5000, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log("Listening on port 5000");
 });
