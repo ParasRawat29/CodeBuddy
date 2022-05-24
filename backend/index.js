@@ -14,17 +14,17 @@ const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://localhost:3000",
-  },
-});
+const io = new Server(server);
 app.use(bodyPareser.urlencoded({ extended: false }));
 app.use(bodyPareser.json());
-app.use(express.static("../frontend/build"));
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 });
+
+console.log(path.resolve(__dirname, "..", "frontend", "build", "index.html"));
 app.post("/run", async (req, res, next) => {
   const { language = "py", code } = req.body;
   if (code == "") {
