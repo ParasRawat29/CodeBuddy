@@ -1,0 +1,96 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+button {
+  outline: none;
+  border: none;
+}
+.App {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #2a2a2a;
+  position: relative;
+}
+.App .heading {
+  color: rgb(155, 205, 188);
+  text-align: center;
+  padding: 3px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 95%;
+  background-color: #18222d;
+}
+.codeContainer {
+  width: 60%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.codeContainer .runBtn {
+  background-color: lightgreen;
+  width: 70px;
+  border-radius: 3px;
+  font-size: 1.3rem;
+  padding: 3px 10px;
+  cursor: pointer;
+  margin: 5px;
+}
+.outputContainer .custom {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.custom .wrapper select {
+  background-color: #1e2934;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 7px 10px;
+  min-width: 200px;
+  outline: none;
+  color: rgb(230, 219, 198);
+  margin: 10px 0;
+}
+.outputContainer {
+  background-color: inherit;
+  width: 40%;
+  height: 100%;
+  padding: 1rem;
+  min-width: 250px;
+}
+.outputContainer h4 {
+  font-size: 1.2rem;
+  color: whitesmoke;
+  padding: 3px 5px;
+  background-color: #2b3e52;
+}
+
+.outputContainer .outputWrapper {
+  margin: 10px 0;
+  border: 1px solid rgb(87, 86, 86);
+  min-height: 400px;
+  max-height: 400px;
+  height: 80%;
+}
+.outputContainer .output {
+  color: aliceblue;
+  font-size: 1.1rem;
+  width: 100%;
+  height: 90%;
+  padding: 4px;
+  resize: none;
+  background-color: inherit;
+  outline: none;
+  border: none;
+  white-space: pre-wrap;
+}
