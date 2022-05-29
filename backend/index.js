@@ -15,6 +15,7 @@ app.use(cors());
 
 const server = http.createServer(app);
 const io = new Server(server);
+
 app.use(bodyPareser.urlencoded({ extended: false }));
 app.use(bodyPareser.json());
 
@@ -63,18 +64,16 @@ function getAllConnectedClients(roomId) {
   );
 }
 
+// socket related functions
 io.on("connection", (socket) => {
-  console.log("socket connected : ", socket.id);
-
   socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
     socketIdMapUsername[socket.id] = username;
     socket.join(roomId);
 
     // notify every user in the room that XXXXX has joined the room
     const clients = getAllConnectedClients(roomId);
-    console.log(clients);
     clients.forEach((client) => {
-      socket.to(client.socketId).emit(ACTIONS.JOINED, {
+      io.to(client.socketId).emit(ACTIONS.JOINED, {
         username,
         clients,
         socketId: socket.id,
@@ -90,10 +89,18 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on(ACTIONS.SYNC_CODE, ({ code, output, language, socketId }) => {
+    io.to(socketId).emit(ACTIONS.SYNC_CODE, {
+      code,
+      language,
+      output,
+    });
+  });
+
   socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];
-    rooms.forEach((roomId) => {
-      socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
+    rooms.forEach((rid) => {
+      socket.in(rid).emit(ACTIONS.DISCONNECTED, {
         socketId: socket.id,
         username: socketIdMapUsername[socket.id],
       });

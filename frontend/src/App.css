@@ -33,6 +33,14 @@ button {
   overflow: hidden;
 }
 
+.outputContainer {
+  background-color: inherit;
+  width: 40%;
+  height: 100%;
+  padding: 1rem;
+  min-width: 250px;
+}
+
 .codeContainer .runBtn {
   background-color: lightgreen;
   width: 70px;
@@ -56,18 +64,12 @@ button {
   cursor: pointer;
   font-size: 1.1rem;
   padding: 7px 10px;
-  min-width: 200px;
+  min-width: 150px;
   outline: none;
   color: rgb(230, 219, 198);
   margin: 10px 0;
 }
-.outputContainer {
-  background-color: inherit;
-  width: 40%;
-  height: 100%;
-  padding: 1rem;
-  min-width: 250px;
-}
+
 .outputContainer h4 {
   font-size: 1.2rem;
   color: whitesmoke;
@@ -93,4 +95,11 @@ button {
   outline: none;
   border: none;
   white-space: pre-wrap;
+}
+
+.usersBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
 }

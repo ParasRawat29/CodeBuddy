@@ -10,6 +10,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import Toast from "./Toast";
+import Users from "./Users";
+import menu from "../icons/menu.png";
 
 function EditorComp() {
   // hooks for data
@@ -30,7 +32,8 @@ function EditorComp() {
     success: true,
     opacity: 0,
   });
-
+  const [allClients, setAllClients] = useState([]);
+  const [sidebarActive, setSidebarActive] = useState(false);
   // change code input
   function handleCodeInput(e) {
     setCode(() => e);
@@ -93,23 +96,28 @@ function EditorComp() {
         });
 
         // listen to joined event
-        socketRef.current.on(ACTIONS.JOINED, ({ username, clients }) => {
-          socketRef.current.emit(ACTIONS.SYNC_CODE, {
-            language,
-            output,
-            code,
-          });
-
-          if (location.state !== username) {
-            setToast(() => {
-              return {
-                success: true,
-                message: `${username} joined`,
-                opacity: 1,
-              };
+        socketRef.current.on(
+          ACTIONS.JOINED,
+          ({ username, clients, socketId }) => {
+            setAllClients(clients);
+            if (location.state !== username) {
+              setToast(() => {
+                return {
+                  success: true,
+                  message: `${username} joined`,
+                  opacity: 1,
+                };
+              });
+            }
+            // emit event to server to sync code on join
+            socketRef.current.emit(ACTIONS.SYNC_CODE, {
+              code,
+              output,
+              language,
+              socketId,
             });
           }
-        });
+        );
       }
 
       socketRef.current.on(ACTIONS.SYNC_CODE, ({ code, output, language }) => {
@@ -119,7 +127,10 @@ function EditorComp() {
       });
 
       // listen on disconnected
-      socketRef.current.on(ACTIONS.DISCONNECTED, ({ sockeId, username }) => {
+      socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
+        setAllClients((pre) =>
+          pre.filter((client) => client.socketId !== socketId)
+        );
         setToast(() => {
           return {
             success: true,
@@ -153,13 +164,14 @@ function EditorComp() {
   }, [toast.opacity, toast.message, toast.success]);
 
   useEffect(() => {
-    if (socketRef.current)
+    if (socketRef.current) {
       socketRef.current.emit(ACTIONS.CODE_CHANGED, {
         roomId,
         code,
         output,
         language,
       });
+    }
   }, [code, output, language, roomId]);
 
   if (!location.state) {
@@ -173,6 +185,36 @@ function EditorComp() {
         opacity={toast.opacity}
         success={toast.success}
       />
+      <button
+        className="usersBtn"
+        onClick={() => setSidebarActive((pre) => !pre)}
+        style={{
+          fontSize: "1.2rem",
+          padding: "3px 5px",
+          color: "black",
+          fontWeight: "600",
+          borderRadius: "50%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "30px",
+          height: "30px",
+        }}
+      >
+        {sidebarActive ? (
+          "X"
+        ) : (
+          <img src={menu} alt="" width="20px" height="20px" />
+        )}
+      </button>
+      <Users
+        allClients={allClients}
+        sidebarActive={sidebarActive}
+        setToast={setToast}
+        roomId={roomId}
+        socketRef={socketRef}
+      />
+
       <h1 className="heading">Code Compiler</h1>
       <div className="container">
         <div className="codeContainer">
