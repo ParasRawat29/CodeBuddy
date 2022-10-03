@@ -5,5 +5,16 @@ const ACTIONS = {
   LEAVE: "leave",
   CODE_CHANGED: "code-changed",
   SYNC_CODE: "sync-code",
+  OUTPUT_CHANGED: "output-changed",
+  LANGUAGE_CHANGED: "language-changed",
+  ROOM_FULL: "room-full",
+  JOIN_VIDEO: "join-video",
+  ALL_USERS: "all-users",
+  OFFER: "offer",
+  GET_OFFER: "get-offer",
+  ANSWER: "answer",
+  GET_ANSWER: "get-answer",
+  CANDIDATE: "candidate",
+  GET_CANDIDATE: "get-candidate",
 };
 module.exports = ACTIONS;

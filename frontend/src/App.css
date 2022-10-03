@@ -1,18 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap");
+
+@import url("./styles/variables.css");
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+*::-webkit-scrollbar {
+  width: 6px; /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--darkgray); /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--lightWhiteColor); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
 button {
   outline: none;
   border: none;
+  cursor: pointer;
 }
 .App {
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background-color: #2a2a2a;
+  height: 90vh;
+  /* //overflow: hidden; */
+  background-color: var(--backgroundColor);
   position: relative;
+  font-family: "Kanit";
 }
 .App .heading {
   color: rgb(155, 205, 188);
@@ -21,80 +38,50 @@ button {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial;
 }
 
+.peerheading {
+  font-family: "Kanit";
+  font-style: normal;
+  font-weight: 700;
+  font-size: clamp(3rem, 7.333vw, 5rem);
+  text-align: center;
+  color: #ffffff;
+}
 .container {
   display: flex;
-  flex-direction: row;
-  height: 95%;
-  background-color: #18222d;
-}
-.codeContainer {
-  width: 60%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.outputContainer {
-  background-color: inherit;
-  width: 40%;
-  height: 100%;
-  padding: 1rem;
-  min-width: 250px;
-}
-
-.codeContainer .runBtn {
-  background-color: lightgreen;
-  width: 70px;
-  border-radius: 3px;
-  font-size: 1.3rem;
-  padding: 3px 10px;
-  cursor: pointer;
-  margin: 5px;
-}
-.outputContainer .custom {
+  user-select: none;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  flex: 1;
-  width: 100%;
+  flex-direction: column;
   justify-content: space-evenly;
+  align-items: center;
+  background-color: var(--backgroundColor);
 }
 
-.custom .wrapper select {
-  background-color: #1e2934;
-  cursor: pointer;
-  font-size: 1.1rem;
-  padding: 7px 10px;
-  min-width: 150px;
-  outline: none;
-  color: rgb(230, 219, 198);
-  margin: 10px 0;
+.transparentCard {
+  padding: 10px;
+  background: linear-gradient(
+    152.28deg,
+    #282a36 20.41%,
+    rgba(40, 42, 54, 0) 85.54%
+  );
+  border: 1px solid var(--lightGrayColor);
+  border-radius: 5px;
 }
 
-.outputContainer h4 {
-  font-size: 1.2rem;
-  color: whitesmoke;
-  padding: 3px 5px;
-  background-color: #2b3e52;
+.actionBtn {
+  display: flex;
+  align-items: "center";
+  width: fit-content;
+  font-family: "Kanit";
+  font-size: clamp(1rem, 4vw, 1.4rem);
+  padding: 5px 10px;
+  font-weight: 400;
+  background-color: transparent;
 }
-
-.outputContainer .outputWrapper {
-  margin: 10px 0;
-  border: 1px solid rgb(87, 86, 86);
-  min-height: 400px;
-  max-height: 400px;
-  height: 80%;
-}
-.outputContainer .output {
-  color: aliceblue;
-  font-size: 1.1rem;
-  width: 100%;
-  height: 90%;
-  padding: 4px;
-  resize: none;
-  background-color: inherit;
-  outline: none;
-  border: none;
-  white-space: pre-wrap;
+.actionBtn:active {
+  transform: scale(0.95);
 }
 
 .usersBtn {

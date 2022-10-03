@@ -1,0 +1,19 @@
+.transparentCard .emoji {
+  font-size: clamp(2rem, 4vw, 4rem);
+  margin: 0 0 1rem 0;
+}
+
+.createBtn {
+  color: var(--yellowColor);
+  filter: drop-shadow(0px 3px 9px var(--yellowColor));
+  border: 3px solid var(--yellowColor);
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+.joinBtn {
+  color: var(--greenColor);
+  filter: drop-shadow(0px 3px 9px var(--greenColor));
+  border: 3px solid var(--greenColor);
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}

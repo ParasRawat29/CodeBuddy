@@ -1,0 +1,11 @@
+:root {
+  --backgroundColor: #1b1b20;
+  --yellowColor: #ffd90f;
+  --greenColor: rgba(99, 215, 118, 1);
+  --lightBlackColor: #333333;
+  --lightGrayColor: #424242;
+  --lightWhiteColor: rgba(255, 255, 255, 0.53);
+  --loginOrangeColor: #dc9d63;
+  --purpleColor: #c83dde;
+  --darkgray: #222222;
+}

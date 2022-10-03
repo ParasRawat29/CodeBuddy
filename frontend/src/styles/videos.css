@@ -1,0 +1,32 @@
+.videosWrapper {
+  width: 100%;
+  height: 45%;
+  margin-top: 30px;
+}
+.vidConnectBtn {
+  color: var(--purpleColor);
+  /* filter: drop-shadow(0px 3px 9px var(--purpleColor)); */
+  border: 3px solid var(--purpleColor);
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  border-radius: 900px;
+  margin: auto;
+}
+
+.videoContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  /* background-color: wheat; */
+}
+
+.videoCard {
+  width: 40%;
+  height: 160px;
+  padding: 5px;
+}
+.videoCard video {
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,25 @@
+.navbarWrapper {
+  display: flex;
+  justify-content: space-between;
+  background-color: transparent;
+  width: 100%;
+  padding: 5px 1rem;
+  height: 40px;
+}
+.linksList {
+  display: flex;
+  justify-content: space-evenly;
+}
+.signedOutLinkList {
+  display: flex;
+  justify-content: center;
+}
+
+.signedOutLinkList .loginBtn {
+  color: var(--loginOrangeColor);
+  border: 2px solid var(--loginOrangeColor);
+  padding: 3px 20px;
+  align-items: center;
+  font-size: 1rem;
+  margin: 0;
+}
