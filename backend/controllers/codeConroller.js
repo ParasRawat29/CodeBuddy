@@ -4,6 +4,7 @@ const executeJs = require("../utils/execJs");
 const { catchAsyncError } = require("../middlewares/catchAsyncError");
 const ErrorHandler = require("../utils/Errorhandler");
 const Codes = require("../model/code");
+const { paginate } = require("../utils/paginate");
 
 exports.runCode = catchAsyncError(async (req, res, next) => {
   const { language = "py", code } = req.body;
@@ -63,11 +64,27 @@ exports.getSingleCode = catchAsyncError(async (req, res, next) => {
 });
 
 exports.getAllCode = catchAsyncError(async (req, res, next) => {
-  const codes = await Codes.findAll({
+  const { keyword, page, limit, language } = req.query;
+  let search = {
     where: {
       userId: req.user.id,
     },
-  });
+  };
+
+  if (keyword) {
+    search = {
+      where: {
+        fileName: {
+          [Op.like]: `%${keyword}%`,
+        },
+      },
+    };
+  }
+  if (language) {
+    search.where.language = language;
+  }
+
+  const codes = await paginate(Codes, search, page, limit);
   res.status(200).json({
     success: true,
     codes,
