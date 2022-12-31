@@ -5,6 +5,7 @@ function FormInput({ label, errorMessage, onChange, id, ...inputProps }) {
   const handleFocus = () => {
     setFocused(true);
   };
+
   return (
     <div className="formInput">
       <input

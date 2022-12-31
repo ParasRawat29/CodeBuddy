@@ -6,9 +6,11 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../../actions";
+import { useSelector } from "react-redux";
 
 function CodeEditor({ socketRef, roomId, handleCodeInput }) {
   const editorRef = useRef(null);
+  const { code } = useSelector((state) => state.code);
 
   useEffect(() => {
     async function init() {
@@ -25,15 +27,17 @@ function CodeEditor({ socketRef, roomId, handleCodeInput }) {
 
       editorRef.current.on("change", (instance, changes) => {
         const { origin } = changes;
-        const code = instance.getValue();
-        handleCodeInput(code);
+        const codeVal = instance.getValue();
+        handleCodeInput(codeVal);
         if (origin !== "setValue") {
           socketRef.current.emit(ACTIONS.CODE_CHANGED, {
             roomId,
-            code,
+            code: codeVal,
           });
         }
       });
+
+      editorRef.current.setValue(code);
     }
 
     if (editorRef.current === null) init();

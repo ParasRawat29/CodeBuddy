@@ -34,39 +34,3 @@
   color: var(--purpleColor);
   border: 2px solid var(--purpleColor);
 }
-.dropdownWrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: 1px solid white;
-  border-radius: 900px;
-  padding: 0 5px;
-}
-.dropdownWrapper select {
-  appearance: none;
-  outline: 0;
-  border: 0;
-  box-shadow: none;
-  flex: 1;
-  font-size: 1rem;
-  padding: 10px 1em;
-  color: #fff;
-  background-color: transparent;
-  background-image: none;
-  cursor: pointer;
-}
-.dropdownWrapper select::-ms-expand {
-  display: none;
-}
-.dropdownWrapper::after {
-  content: "\25BC";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 5px;
-  padding: 0;
-  background-color: transparent;
-  transition: 0.25s all ease;
-  pointer-events: none;
-  color: white;
-}

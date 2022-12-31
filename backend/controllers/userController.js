@@ -21,7 +21,7 @@ exports.signIn = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Wrong email or password", 401));
   }
 
-  sendToken(req, res, 200, user[0].email);
+  sendToken(req, res, 200, user[0].email, user[0].name);
 });
 
 exports.register = catchAsyncError(async (req, res, next) => {
@@ -43,7 +43,7 @@ exports.register = catchAsyncError(async (req, res, next) => {
     email: email,
     password: password,
   }).then((result) => {
-    sendToken(req, res, 201, result.id);
+    sendToken(req, res, 201, result.email, result.name);
   });
 });
 

@@ -66,36 +66,36 @@ function Videos({ socketRef, roomId }) {
     peerConnection.current.addIceCandidate(new RTCIceCandidate(can));
   };
 
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then((stream) => {
-        localVideoRef.current.srcObject = stream;
-        stream.getTracks().forEach((track) => {
-          peerConnection.current.addTrack(track, stream);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  // useEffect(() => {
+  //   navigator.mediaDevices
+  //     .getUserMedia(constraints)
+  //     .then((stream) => {
+  //       localVideoRef.current.srcObject = stream;
+  //       stream.getTracks().forEach((track) => {
+  //         peerConnection.current.addTrack(track, stream);
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
 
-    peerConnection.current = new RTCPeerConnection(null);
-    peerConnection.current.onicecandidate = (e) => {
-      if (e.candidate) {
-        console.log(JSON.stringify(e.candidate));
-      }
-    };
+  //   peerConnection.current = new RTCPeerConnection(null);
+  //   peerConnection.current.onicecandidate = (e) => {
+  //     if (e.candidate) {
+  //       console.log(JSON.stringify(e.candidate));
+  //     }
+  //   };
 
-    peerConnection.current.oniceconnectionstatechange = (e) => {
-      console.log(e);
-    };
+  //   peerConnection.current.oniceconnectionstatechange = (e) => {
+  //     console.log(e);
+  //   };
 
-    peerConnection.current.ontrack = (e) => {
-      // we get remote stream
-      console.log("on track called", e.streams);
-      remoteVideoRef.current.srcObject = e.streams[0];
-    };
-  }, []);
+  //   peerConnection.current.ontrack = (e) => {
+  //     // we get remote stream
+  //     console.log("on track called", e.streams);
+  //     remoteVideoRef.current.srcObject = e.streams[0];
+  //   };
+  // }, []);
 
   return (
     <div className="videosWrapper">

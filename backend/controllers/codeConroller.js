@@ -8,7 +8,7 @@ const { paginate } = require("../utils/paginate");
 
 exports.runCode = catchAsyncError(async (req, res, next) => {
   const { language = "py", code } = req.body;
-  if (code == "") {
+  if (!code || code == "") {
     return res.json({ success: false, error: "empty Code body" }).status(400);
   }
 
@@ -34,8 +34,8 @@ exports.runCode = catchAsyncError(async (req, res, next) => {
 exports.saveCode = catchAsyncError(async (req, res, next) => {
   const { code, fileName, language } = req.body;
   if (!code) return next(new ErrorHandler("no code to save", 400));
-  if (!fileName) return next(new ErrorHandler("no filename", 400));
-  if (!language) return next(new ErrorHandler("no filename", 400));
+  if (!fileName) return next(new ErrorHandler("enter filename", 400));
+  if (!language) return next(new ErrorHandler("select a language", 400));
 
   Codes.create({
     code,
@@ -90,3 +90,5 @@ exports.getAllCode = catchAsyncError(async (req, res, next) => {
     codes,
   });
 });
+
+exports.saveFileName = catchAsyncError(async (req, res, next) => {});

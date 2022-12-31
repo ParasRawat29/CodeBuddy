@@ -1,12 +1,11 @@
-import e from "cors";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import Heading from "../components/Heading";
-import { generateRandomId } from "../helper";
 import ArrowRight from "../icons/ArrowRight";
 import "../styles/form.css";
-
+import { newRoom, validateRoom } from "./logic";
+import { useAlert } from "react-alert";
 const INPUTS = [
   {
     id: 1,
@@ -26,14 +25,14 @@ const INPUTS = [
     errorMessage:
       "Username should be 3-16 characters and shouldn't include any special character!",
     label: "Username",
-    pattern: "^[A-Za-z0-9]{3,16}$",
+    pattern: "^[A-Za-z0-9 ]{3,16}$",
     required: true,
   },
 ];
 
 function JoinRoom({ join = false, create = false }) {
   const navigate = useNavigate();
-
+  const alert = useAlert();
   const [values, setValues] = useState({
     roomId: "",
     username: "",
@@ -42,9 +41,21 @@ function JoinRoom({ join = false, create = false }) {
   const handleRoomJoin = () => {
     if (values.roomId.trim() === "" || values.username.trim() === "") return;
     else {
-      navigate(`/editor/${values.roomId}`, {
-        state: values.username,
-      });
+      if (join) {
+        validateRoom(values.roomId)
+          .then(() => {
+            navigate(`/editor/${values.roomId}`, {
+              state: values.username,
+            });
+          })
+          .catch((err) => {
+            alert.info(err);
+          });
+      } else {
+        navigate(`/editor/${values.roomId}`, {
+          state: values.username,
+        });
+      }
     }
   };
 
@@ -60,8 +71,14 @@ function JoinRoom({ join = false, create = false }) {
 
   useEffect(() => {
     if (create && !values.roomId) {
-      let num = generateRandomId(8);
-      setValues((pre) => ({ ...pre, roomId: num }));
+      newRoom()
+        .then((res) => {
+          console.log(res);
+          setValues((pre) => ({ ...pre, roomId: res.id }));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, []);
 
