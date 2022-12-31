@@ -7,7 +7,7 @@
     "start": "node backend/index.js",
     "server": "nodemon backend/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd backend && npm install  && cd ../frontend && npm install && npm run build"
+    "build": "cd backend && npm install --force  && cd ../frontend && npm install --force && npm run build"
   },
   "author": "",
   "license": "ISC",
