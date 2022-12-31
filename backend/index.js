@@ -36,12 +36,13 @@ const io = Socket(server, {
 app.use(bodyPareser.urlencoded({ extended: false }));
 app.use(bodyPareser.json());
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, "../frontend/build")));
+/*******************           deploy           ******************* */
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-// });
-
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+});
+///////////////////////////////////////////////////////////////////////////
 app.use(userRoutes);
 app.use(codeRoutes);
 app.use("/room", roomRoutes);
