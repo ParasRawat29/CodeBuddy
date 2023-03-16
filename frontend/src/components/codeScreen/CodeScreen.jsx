@@ -22,7 +22,7 @@ import Menu from "../../icons/Menu";
 
 function CodeScreen() {
   const alert = useAlert();
-  const { language, code, output } = useSelector((state) => state.code);
+  const { language, code, output, fileId } = useSelector((state) => state.code);
   let socketRef = useRef(null);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -35,6 +35,7 @@ function CodeScreen() {
   // change code input
   function handleCodeInput(code) {
     dispatch(codeActions.setCode({ code }));
+    sessionStorage.setItem("code", code);
   }
 
   // handle code run (make request to backend)
@@ -92,7 +93,7 @@ function CodeScreen() {
         socketRef.current = await initSocket();
         socketRef.current.on("connect_error", (err) => handleError(err));
         socketRef.current.on("connect_failed", (err) => handleError(err));
-
+        socketRef.current.on("close", (ev) => console.log(ev));
         // emit join event
         socketRef.current.emit(ACTIONS.JOIN, {
           roomId,
@@ -102,20 +103,23 @@ function CodeScreen() {
         // listen to joined event
         socketRef.current.on(
           ACTIONS.JOINED,
-          ({ username, clients, joinedUserSocketId }) => {
+          ({ username, clients, joinedUserSocketId, currentUser }) => {
             setAllClients(clients);
             // dont show joined messaege to user itself
             if (location.state !== username) {
               alert.success(`${username} joined the room`);
             }
             // emit event to server to sync code on join
-            alert.error("bhai ue le code");
-            socketRef.current.emit(ACTIONS.SYNC_CODE, {
-              code,
-              output,
-              language,
-              joinedUserSocketId,
-            });
+
+            if (currentUser !== joinedUserSocketId) {
+              console.log(code, output, language);
+              socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                code,
+                output,
+                language,
+                joinedUserSocketId,
+              });
+            }
           }
         );
 
@@ -150,8 +154,12 @@ function CodeScreen() {
   }, []);
 
   useEffect(() => {
-    console.log(allClients);
-  }, [allClients]);
+    const preRoom = sessionStorage.getItem("cr");
+    if (preRoom !== roomId && !fileId) {
+      sessionStorage.removeItem("code");
+      sessionStorage.setItem("cr", roomId);
+    }
+  }, []);
 
   if (!location.state) {
     return <Navigate to="/" />;

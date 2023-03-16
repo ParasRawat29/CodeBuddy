@@ -28,3 +28,17 @@ exports.validateRoom = catchAsyncError((req, res, next) => {
     });
   }
 });
+
+exports.validateRoomToJoin = catchAsyncError((req, res, next) => {
+  let { id } = req.body;
+  if (index.validateRoomExist(id)) {
+    res.status(200).json({
+      success: true,
+    });
+  } else {
+    res.status(200).json({
+      success: false,
+      message: "No such room exist",
+    });
+  }
+});

@@ -8,20 +8,16 @@ exports.signIn = catchAsyncError(async (req, res, next) => {
   if (!email || !password) {
     return next(new ErrorHandler("enter email and password", 400));
   }
-  const user = await User.findAll({
-    where: {
-      email: email,
-    },
-  });
+  const user = await User.findOne({ email: email }).select("+password");
 
-  if (user.length === 0) {
+  if (!user) {
     return next(new ErrorHandler("Wrong email or password", 401));
   }
-  if (!(password === user[0].password)) {
+  if (!(password === user.password)) {
     return next(new ErrorHandler("Wrong email or password", 401));
   }
 
-  sendToken(req, res, 200, user[0].email, user[0].name);
+  sendToken(req, res, 200, user.email, user.name);
 });
 
 exports.register = catchAsyncError(async (req, res, next) => {
@@ -29,22 +25,17 @@ exports.register = catchAsyncError(async (req, res, next) => {
   if (!email || !password || !name) {
     return next(new ErrorHandler("enter email , password , name", 400));
   }
-  const user = await User.findAll({
-    where: {
-      email: email,
-    },
-  });
-  if (user.length > 0) {
+  const user = await User.findOne({ email: email });
+  if (user) {
     return next(new ErrorHandler("user alerady exists with this email", 409));
   }
 
-  User.create({
+  const result = await User.create({
     name: name,
     email: email,
     password: password,
-  }).then((result) => {
-    sendToken(req, res, 201, result.email, result.name);
   });
+  sendToken(req, res, 201, result.email, result.name);
 });
 
 exports.logout = catchAsyncError(async (req, res, next) => {
@@ -62,11 +53,9 @@ exports.logout = catchAsyncError(async (req, res, next) => {
 });
 
 exports.getUserDetails = catchAsyncError(async (req, res, next) => {
-  const user = await User.findOne({
-    where: {
-      id: req.user.id,
-    },
-    attributes: ["name", "email", "createdAt"],
-  });
+  const user = await User.findById(
+    { _id: req.user.id },
+    "name email createdAt"
+  );
   res.status(200).json({ success: true, user });
 });

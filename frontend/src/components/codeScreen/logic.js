@@ -1,6 +1,6 @@
 import store from "../../store/rootReducer";
 import { http } from "../../utils/http";
-export const saveCode = async (alert, fileName) => {
+export const saveCode = async (alert, fileName, id) => {
   let st = store.getState();
 
   return new Promise((resolve, reject) => {
@@ -8,6 +8,7 @@ export const saveCode = async (alert, fileName) => {
       code: st.code.code,
       language: st.code.language.val,
       fileName,
+      id,
     })
       .then((res) => {
         if (res.data.success) {

@@ -30,7 +30,7 @@ function SignedInLinks() {
             padding: "10px",
           }}
         >
-          <li style={{ margin: "10px 0" }}>
+          <li style={{ margin: "10px 0" }} onClick={() => setOpen(false)}>
             <NavLink
               to="/codebase"
               style={{
@@ -42,7 +42,7 @@ function SignedInLinks() {
               codebase
             </NavLink>
           </li>
-          <li>
+          <li onClick={() => setOpen(false)}>
             <button
               style={{
                 backgroundColor: "indianred",

@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-const { Server } = require("socket.io");
 const bodyPareser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const Socket = require("socket.io");
+const { Server } = require("socket.io");
+const mongoose = require("mongoose");
 
 require("dotenv").config({ path: __dirname + "/.env" });
 const ACTIONS = require("../frontend/src/actions");
@@ -14,10 +14,6 @@ const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const { errorHandler } = require("./middlewares/error");
 
-const sequelize = require("./config/database");
-const User = require("./model/user");
-const Codes = require("./model/code");
-const { Module } = require("module");
 const app = express();
 app.use(
   cors({
@@ -28,33 +24,27 @@ app.use(
 
 const server = http.createServer(app);
 
-const io = Socket(server, {
+app.use(bodyPareser.urlencoded({ extended: false }));
+app.use(bodyPareser.json());
+app.use(cookieParser());
+
+const io = new Server(server, {
   cors: {
     origin: "*",
   },
 });
-app.use(bodyPareser.urlencoded({ extended: false }));
-app.use(bodyPareser.json());
-app.use(cookieParser());
-/*******************           deploy           ******************* */
-app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-});
+/*******************           deploy           ******************* */
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+// });
 ///////////////////////////////////////////////////////////////////////////
 app.use(userRoutes);
 app.use(codeRoutes);
 app.use("/room", roomRoutes);
-User.hasMany(Codes, { constraints: true, onDelete: "CASCADE" });
 
-sequelize.sync().then(() => {
-  server.listen(process.env.PORT || 5000, () => {
-    console.log("Listening on port 5000");
-  });
-});
-
-app.use(errorHandler);
 /***********************    SOCKETS   *******************************/
 
 //   let socketIdMapUsername = {};
@@ -76,6 +66,14 @@ function isRoomIdEmpty(id) {
 function validateRoomId(id) {
   const allRooms = getAllRooms();
   if (allRooms.length === 0) return true;
+  let room = allRooms.find((item) => item[0] === id);
+  if (room) return true;
+  else return false;
+}
+
+function validateRoomExist(id) {
+  const allRooms = getAllRooms();
+  if (allRooms.length === 0) return false;
   let room = allRooms.find((item) => item[0] === id);
   if (room) return true;
   else return false;
@@ -119,12 +117,13 @@ io.on("connection", (socket) => {
 
     //   console.log("all rooms : ", getAllRooms());
     clients.forEach((client) => {
-      if (client.socketId !== socket.id)
-        io.to(client.socketId).emit(ACTIONS.JOINED, {
-          username,
-          clients,
-          joinedUserSocketId: socket.id,
-        });
+      // if (client.socketId !== socket.id)
+      io.to(client.socketId).emit(ACTIONS.JOINED, {
+        username,
+        clients,
+        currentUser: client.socketId,
+        joinedUserSocketId: socket.id,
+      });
     });
   });
 
@@ -196,5 +195,26 @@ io.on("connection", (socket) => {
   });
 });
 
+mongoose.connect(process.env.MONGO_URL).then((res) => {
+  console.log("database connected");
+  server.listen(process.env.PORT || "5000", () => {
+    console.log(`server running at port ${process.env.PORT}`);
+  });
+});
+
+// unhandled promise rejection
+process.on("unhandledRejection", (err) => {
+  console.log(`Error:${err.message}`);
+  console.log(`shutting down the server due to unhandled promise rejection`);
+  server.close(() => {
+    process.exit();
+  });
+});
+
+app.use(errorHandler);
+
 module.exports.isRoomIdEmpty = isRoomIdEmpty;
 module.exports.validateRoomId = validateRoomId;
+module.exports.validateRoomExist = validateRoomExist;
+
+module.exports.app = app;

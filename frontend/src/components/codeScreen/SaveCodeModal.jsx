@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useAlert } from "react-alert";
+import { useDispatch, useSelector } from "react-redux";
 import SaveIcon from "../../icons/SaveIcon";
+import { codeActions } from "../../store/codeSlice";
 import FormInput from "../FormInput";
 import { saveCode } from "./logic";
 
@@ -19,20 +21,25 @@ const INPUTS = [
 ];
 function SaveCodeModal({ modalOpen, setModalOpen }) {
   const alert = useAlert();
-
-  const [filename, setFilename] = useState();
+  const dispatch = useDispatch();
+  const { fileName, fileId } = useSelector((state) => state.code);
+  const [filename, setFilename] = useState(fileName);
+  const [error, setError] = useState(null);
   const handleChange = (e) => {
     setFilename(e.target.value);
   };
 
   const handleSaveSubmit = (e) => {
     e.preventDefault();
-    saveCode(alert, filename)
+    setError(null);
+    saveCode(alert, filename, fileId)
       .then((res) => {
+        dispatch(codeActions.setFileName({ fileName: filename }));
         alert.success(res);
+        setModalOpen(false);
       })
       .catch((err) => {
-        alert.error(err.response.data.message);
+        setError(err.response.data.message);
       });
   };
 
@@ -43,6 +50,7 @@ function SaveCodeModal({ modalOpen, setModalOpen }) {
           <span className="close" onClick={() => setModalOpen(false)}>
             &times;
           </span>
+
           <form onSubmit={handleSaveSubmit}>
             {INPUTS.map((input) => (
               <FormInput
@@ -52,6 +60,17 @@ function SaveCodeModal({ modalOpen, setModalOpen }) {
                 onChange={handleChange}
               />
             ))}
+            {error && (
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "indianred",
+                  marginBottom: "10px",
+                }}
+              >
+                {error}
+              </p>
+            )}
             <div
               className="buttonsWrapper"
               style={{ justifyContent: "center" }}

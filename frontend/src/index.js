@@ -19,13 +19,11 @@ const options = {
 };
 
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AlertProvider template={AlertTemplate} {...options}>
-        <ReduxProvider store={store}>
-          <App />
-        </ReduxProvider>
-      </AlertProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <AlertProvider template={AlertTemplate} {...options}>
+      <ReduxProvider store={store}>
+        <App />
+      </ReduxProvider>
+    </AlertProvider>
+  </BrowserRouter>
 );

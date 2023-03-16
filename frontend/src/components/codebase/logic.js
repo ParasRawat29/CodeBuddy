@@ -8,10 +8,10 @@ export const getData = async (setCodeList) => {
         withCredentials: true,
       }
     );
-
+    console.log(data);
     if (!data.success) {
     } else {
-      setCodeList(data.codes.data);
+      setCodeList(data.codes);
     }
   } catch (error) {}
 };
@@ -35,6 +35,18 @@ export const getSingleCode = async (id, setCodeData) => {
 export const getNewRoom = () => {
   return new Promise((resolve, reject) => {
     http(`${process.env.REACT_APP_BACKEND_URL}room/getNewRoom/`)
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export const deleteFile = (id) => {
+  return new Promise((resolve, reject) => {
+    http(`${process.env.REACT_APP_BACKEND_URL}code/delete/`, "DELETE", { id })
       .then((res) => {
         resolve(res.data);
       })

@@ -109,6 +109,7 @@ function Sidebar({ clients, roomId, sidebarActive, setSidebarActive }) {
         <button
           className="actionBtn leaveRoomBtn"
           onClick={() => {
+            sessionStorage.removeItem("code");
             navigate("/");
           }}
         >

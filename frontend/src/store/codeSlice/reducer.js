@@ -1,3 +1,5 @@
+const { LANGUAGES } = require("../../helper");
+
 export const setCode = (state, action) => {
   state.code = action.payload.code;
 };
@@ -14,5 +16,18 @@ export const setOutput = (state, action) => {
 export const reset = (state, action) => {
   state.code = "";
   state.output = "";
-  state.language = { val: "py", id: 1 };
+  state.language = { val: LANGUAGES.PYTHON.val, id: LANGUAGES.PYTHON.id };
+  state.fileId = null;
+  state.fileName = "";
+};
+
+export const setFileName = (state, action) => {
+  state.fileName = action.payload.fileName;
+};
+
+export const setNewFile = (state, action) => {
+  state.newFile = action.payload.newFile;
+};
+export const setFileId = (state, action) => {
+  state.fileId = action.payload.id;
 };

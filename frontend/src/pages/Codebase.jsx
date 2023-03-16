@@ -7,14 +7,15 @@ import { getData } from "../components/codebase/logic";
 
 function Codebase() {
   const [codeList, setCodeList] = useState([]);
+  const [render, setRender] = useState(true);
   useEffect(() => {
     getData(setCodeList);
-  }, []);
+  }, [render]);
 
   return (
     <div className="container" style={{ display: "block" }}>
       <h1 className="head">Codebase</h1>
-      <CodelistTable data={codeList} />
+      <CodelistTable data={codeList} setRender={setRender} />
     </div>
   );
 }

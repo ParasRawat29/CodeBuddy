@@ -3,9 +3,9 @@
   list-style-type: none;
 }
 .dropdownWrapper {
-  position: absolute;
+  /* position: absolute;
   top: 0;
-  right: 0;
+  right: 0; */
   /* background-color: bisque; */
   text-align: center;
   width: 70px;

@@ -37,10 +37,11 @@ function JoinRoom({ join = false, create = false }) {
     roomId: "",
     username: "",
   });
-
+  const [error, setError] = useState(null);
   const handleRoomJoin = () => {
     if (values.roomId.trim() === "" || values.username.trim() === "") return;
     else {
+      setError(null);
       if (join) {
         validateRoom(values.roomId)
           .then(() => {
@@ -49,7 +50,8 @@ function JoinRoom({ join = false, create = false }) {
             });
           })
           .catch((err) => {
-            alert.info(err);
+            // alert.info(err);
+            setError(err);
           });
       } else {
         navigate(`/editor/${values.roomId}`, {
@@ -111,6 +113,11 @@ function JoinRoom({ join = false, create = false }) {
             alignItems: "center",
           }}
         >
+          {error && (
+            <p style={{ color: "indianred" }}>
+              {values.roomId} : {error}
+            </p>
+          )}
           {INPUTS.map((input) => (
             <FormInput
               key={input.id}

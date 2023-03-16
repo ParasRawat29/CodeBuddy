@@ -1,25 +1,23 @@
-const { DataTypes } = require("sequelize");
-const sequalize = require("../config/database");
+const mongoose = require("mongoose");
+const schema = mongoose.Schema;
+// parasRawat
+// lolipop
 
-const User = sequalize.define("user", {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
-  },
+const userSchema = new schema({
   name: {
-    type: DataTypes.STRING,
+    type: String,
+    required: [true, "name cannot be empty"],
+    min: [3, "name field must be minimum 3 alphabet long"],
   },
   email: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: [true, "email cannot be empty"],
     unique: true,
   },
   password: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: [true, "password cannot be empty"],
+    select: false,
   },
 });
-
-module.exports = User;
+module.exports = mongoose.model("User", userSchema);

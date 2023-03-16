@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAlert } from "react-alert";
 import { useDispatch, useSelector } from "react-redux";
+import { LANGUAGES } from "../../helper";
 import JavaScriptIcon from "../../icons/JavaScriptIcon";
 import PlayIcon from "../../icons/PlayIcon";
 import PythonIcon from "../../icons/PythonIcon";
@@ -10,18 +11,19 @@ import Dropdown from "../Dropdown";
 import CodeEditor from "./CodeEditor";
 import SaveCodeModal from "./SaveCodeModal";
 
+// the order of this list matter , the index of the array is the id of the langugage
 const DROP_LIST = [
   {
-    id: 0,
-    name: "javascript",
-    value: "js",
-    image: <JavaScriptIcon width="25px" height="30px" />,
+    id: LANGUAGES.PYTHON.id,
+    name: LANGUAGES.PYTHON.name,
+    value: LANGUAGES.PYTHON.val,
+    image: LANGUAGES.PYTHON.image,
   },
   {
-    id: 1,
-    name: "python",
-    value: "py",
-    image: <PythonIcon width="25px" height="30px" />,
+    id: LANGUAGES.JAVASCRIPT.id,
+    name: LANGUAGES.JAVASCRIPT.name,
+    value: LANGUAGES.JAVASCRIPT.val,
+    image: LANGUAGES.JAVASCRIPT.image,
   },
 ];
 
@@ -33,7 +35,7 @@ function EditorComp({
   handleLanguageChange,
 }) {
   const alert = useAlert();
-  const { code, language } = useSelector((state) => state.code);
+  const { code, language, fileName } = useSelector((state) => state.code);
   const dispatch = useDispatch();
   const { authenticated } = useSelector((state) => state.user);
   const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -59,6 +61,29 @@ function EditorComp({
         />
       )}
       <div className="codeContainer">
+        <header>
+          <div className="fileNameWrapper">
+            <span className="fileIcon">
+              {language.val === "py" ? (
+                <PythonIcon width="20px" height="20px" />
+              ) : (
+                <JavaScriptIcon width="20px" height="20px" />
+              )}
+            </span>
+            <p className="filename">
+              {fileName ? fileName + "." + language.val : "unnamed file"}
+            </p>
+          </div>
+
+          <div className="headerDropDownWrapper">
+            <Dropdown
+              handleLanguageChange={handleLanguageChange}
+              DROP_LIST={DROP_LIST}
+              selected={language}
+            />
+          </div>
+        </header>
+
         <CodeEditor
           handleCodeInput={handleCodeInput}
           socketRef={socketRef}
@@ -82,12 +107,6 @@ function EditorComp({
             <SaveIcon width="20px" height="20px" margin="0 0 0 5px" />
           </button>
         </div>
-
-        <Dropdown
-          handleLanguageChange={handleLanguageChange}
-          DROP_LIST={DROP_LIST}
-          selected={language}
-        />
       </div>
     </div>
   );

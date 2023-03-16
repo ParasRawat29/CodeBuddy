@@ -1,25 +1,30 @@
-const { DataTypes } = require("sequelize");
-const sequalize = require("../config/database");
+const mongoose = require("mongoose");
+const schema = mongoose.Schema;
 
-const Codes = sequalize.define("codes", {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
-  },
+const CodeSchema = new schema({
   code: {
-    type: DataTypes.TEXT,
-    allowNull: false,
+    type: String,
+    required: [true, "Code field cannot be empty"],
   },
   fileName: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: [true, "fileName cannot be empty"],
   },
   language: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: [true, "language cannot be empty"],
+  },
+  user: {
+    type: schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "user id is required while creating code"],
+  },
+  createdOn: {
+    type: Date,
+  },
+  updatedOn: {
+    type: Date,
   },
 });
 
-module.exports = Codes;
+module.exports = mongoose.model("Code", CodeSchema);
