@@ -10,6 +10,9 @@
   display: flex;
   justify-content: space-evenly;
 }
+.linksList div ul {
+  z-index: 10000000000;
+}
 .signedOutLinkList {
   display: flex;
   justify-content: center;

@@ -22,7 +22,7 @@ function SignedInLinks() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            zIndex: "1000",
+            zIndex: "100000",
             right: 0,
             background: "rgba(0,0,0,0.3)",
             fontFamily: "Kanit",

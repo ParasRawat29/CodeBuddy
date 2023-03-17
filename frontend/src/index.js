@@ -18,6 +18,7 @@ const options = {
   transition: transitions.SCALE,
   containerStyle: {
     background: "inherit",
+    zIndex: "10000000",
   },
 };
 
