@@ -16,6 +16,9 @@ const options = {
   timeout: 3000,
   offset: "30px",
   transition: transitions.SCALE,
+  containerStyle: {
+    background: "inherit",
+  },
 };
 
 root.render(

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { http } from "../../utils/http";
-export const getData = async (setCodeList) => {
+export const getData = async (setCodeList, setLoading) => {
+  setLoading(true);
   try {
     const { data } = await axios.get(
       `${process.env.REACT_APP_BACKEND_URL}getAllCodes?page=1&limit=20`,
@@ -13,11 +14,15 @@ export const getData = async (setCodeList) => {
     } else {
       setCodeList(data.codes);
     }
-  } catch (error) {}
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+  }
 };
 
-export const getSingleCode = async (id, setCodeData) => {
+export const getSingleCode = async (id, setCodeData, setLoading) => {
   try {
+    setLoading(true);
     const { data } = await axios.get(
       `${process.env.REACT_APP_BACKEND_URL}code/${id}`,
       {
@@ -29,7 +34,10 @@ export const getSingleCode = async (id, setCodeData) => {
     } else {
       setCodeData(data.code);
     }
-  } catch (error) {}
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+  }
 };
 
 export const getNewRoom = () => {

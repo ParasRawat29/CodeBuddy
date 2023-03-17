@@ -46,7 +46,6 @@ function CodeEditor({ socketRef, roomId, handleCodeInput }) {
   useEffect(() => {
     if (socketRef.current) {
       socketRef.current.on(ACTIONS.CODE_CHANGED, ({ code }) => {
-        alert("lene wala");
         if (code !== null) editorRef.current.setValue(code);
       });
     }
