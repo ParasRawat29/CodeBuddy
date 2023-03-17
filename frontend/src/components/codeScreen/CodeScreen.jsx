@@ -56,9 +56,11 @@ function CodeScreen() {
         let op = "Error : ";
         const error = err.split(",");
         let stderr = "";
-
-        if (language.val === "py") stderr = error[1] + error[2];
-        else if (language.val === "js") {
+        console.log(error);
+        if (language.val === "py") {
+          stderr = error[1];
+          if (error[2]) stderr += error[2];
+        } else if (language.val === "js") {
           stderr = err;
           op += "Line: ";
         }
@@ -157,6 +159,7 @@ function CodeScreen() {
     const preRoom = sessionStorage.getItem("cr");
     if (preRoom !== roomId && !fileId) {
       sessionStorage.removeItem("code");
+      sessionStorage.removeItem("ofn");
       sessionStorage.setItem("cr", roomId);
     }
   }, []);
@@ -216,7 +219,7 @@ function CodeScreen() {
         }}
       >
         <OutputComp socketRef={socketRef} />
-        <Videos />
+        {/* <Videos /> */}
       </section>
     </div>
   );
