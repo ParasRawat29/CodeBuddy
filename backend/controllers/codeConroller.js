@@ -38,12 +38,17 @@ exports.saveCode = catchAsyncError(async (req, res, next) => {
   if (!language) return next(new ErrorHandler("select a language", 400));
 
   if (id) {
-    Code.findByIdAndUpdate(id, {
-      code,
-      fileName,
-      language,
-      updatedOn: Date.now(),
-    })
+    Code.updateOne(
+      { _id: id },
+      {
+        $set: {
+          code,
+          fileName,
+          language,
+          updatedOn: Date.now(),
+        },
+      }
+    )
       .then((_) => {
         res.status(200).json({
           success: true,
