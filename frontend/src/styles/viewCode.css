@@ -1,5 +1,10 @@
 .viewCodeWrapper {
   font-family: Kanit;
+  height: 100%;
+}
+.viewCodeWrapper .CodeMirror {
+  font-size: 1.2rem;
+  height: 80%;
 }
 .header {
   width: 100%;
