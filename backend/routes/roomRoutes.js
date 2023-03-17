@@ -7,6 +7,6 @@ const {
 const router = express.Router();
 
 router.get("/getNewRoom", getNewRoom);
+router.get("/validate/join/:id", validateRoomToJoin);
 router.post("/validate", validateRoom);
-router.get("/validate/join", validateRoomToJoin);
 module.exports = router;

@@ -30,7 +30,7 @@ exports.validateRoom = catchAsyncError((req, res, next) => {
 });
 
 exports.validateRoomToJoin = catchAsyncError((req, res, next) => {
-  let { id } = req.body;
+  let { id } = req.params;
   if (index.validateRoomExist(id)) {
     res.status(200).json({
       success: true,
