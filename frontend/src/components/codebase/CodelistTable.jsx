@@ -103,7 +103,7 @@ function CodelistTable({ data, setRender }) {
                       <button
                         onClick={() => {
                           setModalOpen(true);
-                          setSelectedId(item.id);
+                          setSelectedId(item._id);
                         }}
                         style={{
                           background: "transparent",

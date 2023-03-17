@@ -10,6 +10,7 @@ const LANGICON = {
 };
 
 function ViewCode({ codeData }) {
+  console.log(codeData);
   return (
     <div className="viewCodeWrapper" style={{ textAlign: "left" }}>
       <div className="header" style={{ display: "flex" }}>
@@ -25,9 +26,7 @@ function ViewCode({ codeData }) {
           <label className="label">Created On : </label>
           <span>
             {codeData &&
-              new Date(codeData.createdAt.substr(0, 10)).toLocaleDateString(
-                "en-gb"
-              )}
+              new Date(codeData.createdOn).toLocaleDateString("en-gb")}
           </span>
         </div>
       </div>

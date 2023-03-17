@@ -9,7 +9,7 @@ function ViewCodeEditor({ code }) {
       {
         mode: { name: "javascript", json: true },
         theme: "dracula",
-        lineNumbers: false,
+        lineNumbers: true,
         autoCloseTags: true,
         autoCloseBrackets: true,
         readOnly: true,
