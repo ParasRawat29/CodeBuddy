@@ -10,7 +10,6 @@ function Dropdown({ DROP_LIST, handleLanguageChange, selected }) {
     handleLanguageChange(item);
     setOpen(false);
   };
-  console.log(DROP_LIST);
 
   return (
     <div className="dropdownWrapper">

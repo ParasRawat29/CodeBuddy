@@ -1,0 +1,8 @@
+.MediaStreamControllerButton {
+  display: flex;
+  justify-content: center;
+  background: var(--lightBlackColor);
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}

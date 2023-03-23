@@ -1,107 +1,127 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ACTIONS from "../../actions";
 import "../../styles/videos.css";
-const pc_config = {
-  iceServers: [
-    {
-      urls: "stun:stun.l.google.com:19302",
-    },
-  ],
-};
+import { usePeer } from "../../providers/Peer";
+import Peer from "peerjs";
+import MicOffIcon from "../../icons/MicOffIcon";
+import MicOnIcon from "../../icons/MicOnIcon";
+import CamOnIcon from "../../icons/CamOnIcon";
+import CamOffIcon from "../../icons/CamOffIcon";
+import MediaStreamControllerButton from "../buttons/mediaStreamButton";
 
-const constraints = {
-  audio: false,
-  video: true,
-};
+const constraints = { audio: true, video: true };
 
 function Videos({ socketRef, roomId }) {
   const localVideoRef = useRef();
   const remoteVideoRef = useRef();
-  const peerConnection = useRef(new RTCPeerConnection(null));
-  const textAreaRef = useRef();
+  const peerIdRef = useRef(null);
+  const myPeerRef = useRef(null);
+  const peers = useRef({});
+  const localStreamRef = useRef(null);
+  const [cons, setCons] = useState({ audio: true, video: true });
+
   const handleConnectVideo = () => {
-    // navigator.mediaDevices
-    //   .getUserMedia(constraints)
-    //   .then((stream) => {
-    //     localVideoRef.current.srcObject = stream;
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  };
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(async (stream) => {
+        localStreamRef.current = stream;
+        socketRef.current.emit(ACTIONS.GET_ALL_USERS_PEERID, { roomId });
+        localVideoRef.current.srcObject = stream;
+        localVideoRef.current.play();
 
-  const createOffer = () => {
-    peerConnection.current
-      .createOffer({
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true,
+        myPeerRef.current.on("call", async function (call) {
+          // Answer the call, providing our mediaStream
+          call.answer(localStreamRef.current);
+          call.on("stream", (userVideoStream) => {
+            remoteVideoRef.current.srcObject = userVideoStream;
+            remoteVideoRef.current.play();
+          });
+        });
+
+        socketRef.current.on(ACTIONS.ALL_USERS_PEERID, ({ allPeers }) =>
+          handleAllUsersPeer(allPeers, localStreamRef.current)
+        );
       })
-      .then((sdp) => {
-        console.log(JSON.stringify(sdp));
-        peerConnection.current.setLocalDescription(sdp);
+      .catch((err) => {
+        console.log(err);
       });
   };
 
-  const createAnswer = () => {
-    peerConnection.current
-      .createAnswer({
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true,
-      })
-      .then((sdp) => {
-        console.log(JSON.stringify(sdp));
-        peerConnection.current.setLocalDescription(sdp);
+  const handleAllUsersPeer = (allPeers, stream) => {
+    const call = myPeerRef.current.call(allPeers[0], stream);
+
+    call.on("stream", (userVideoStream) => {
+      remoteVideoRef.current.srcObject = userVideoStream;
+      // remoteVideoRef.current.play();
+    });
+
+    call.on("close", () => {
+      remoteVideoRef.current.pause();
+      remoteVideoRef.current.srcObject = null;
+    });
+    peers.current = { ...peers.current, [allPeers[0]]: call };
+  };
+
+  const closeCamera = () => {
+    const tracks = localStreamRef.current.getTracks();
+    tracks.forEach((track) => {
+      track.stop();
+    });
+  };
+
+  const handleCamToggle = useCallback(
+    (val) => {
+      if (localStreamRef.current) {
+        localStreamRef.current.getVideoTracks()[0].enabled = val;
+        setCons((pre) => ({ ...pre, video: val }));
+      }
+    },
+    [localStreamRef.current]
+  );
+
+  const handleMicToggle = useCallback(
+    (val) => {
+      if (localStreamRef.current) {
+        localStreamRef.current.getAudioTracks()[0].enabled = val;
+        setCons((pre) => ({ ...pre, audio: val }));
+      }
+    },
+    [localStreamRef.current]
+  );
+
+  useEffect(() => {
+    const myPeer = new Peer();
+    myPeerRef.current = myPeer;
+    myPeer.on("open", (id) => {
+      peerIdRef.current = id;
+      socketRef.current.emit(ACTIONS.SET_PEER_ID, { id, roomId });
+    });
+
+    return () => {
+      closeCamera();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on(ACTIONS.DISCONNECTED, ({ peerID }) => {
+        peers.current[peerID].close();
       });
-  };
-
-  const setRemoteDes = () => {
-    const sdp = JSON.parse(textAreaRef.current.value);
-    console.log("remote set");
-    peerConnection.current.setRemoteDescription(sdp);
-  };
-
-  const addCandidate = () => {
-    console.log("clicked");
-    const can = JSON.parse(textAreaRef.current.value);
-    peerConnection.current.addIceCandidate(new RTCIceCandidate(can));
-  };
-
-  // useEffect(() => {
-  //   navigator.mediaDevices
-  //     .getUserMedia(constraints)
-  //     .then((stream) => {
-  //       localVideoRef.current.srcObject = stream;
-  //       stream.getTracks().forEach((track) => {
-  //         peerConnection.current.addTrack(track, stream);
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-
-  //   peerConnection.current = new RTCPeerConnection(null);
-  //   peerConnection.current.onicecandidate = (e) => {
-  //     if (e.candidate) {
-  //       console.log(JSON.stringify(e.candidate));
-  //     }
-  //   };
-
-  //   peerConnection.current.oniceconnectionstatechange = (e) => {
-  //     console.log(e);
-  //   };
-
-  //   peerConnection.current.ontrack = (e) => {
-  //     // we get remote stream
-  //     console.log("on track called", e.streams);
-  //     remoteVideoRef.current.srcObject = e.streams[0];
-  //   };
-  // }, []);
+      socketRef.current.on(
+        ACTIONS.NEW_PEER_JOINED_CALL_ME_FOR_PEER_LIST,
+        () => {
+          socketRef.current.emit(ACTIONS.GET_ALL_USERS_PEERID, { roomId });
+        }
+      );
+      socketRef.current.on("peerId_Created", () => {
+        // socketRef.current.emit(ACTIONS.GET_ALL_USERS_PEERID, { roomId });
+        handleConnectVideo();
+      });
+    }
+  }, [socketRef.current]);
 
   return (
     <div className="videosWrapper">
-      <button className="actionBtn vidConnectBtn" onClick={handleConnectVideo}>
-        Connect Video/Audio
-      </button>
       <div className="videoContainer" style={{ display: "flex" }}>
         <section className="videoCard">
           <video
@@ -111,14 +131,49 @@ function Videos({ socketRef, roomId }) {
               margin: 2,
             }}
           />
+          <div
+            className="micControllerBtnWrapper"
+            style={{ display: "flex", justifyContent: "space-evenly" }}
+          >
+            {cons.video ? (
+              <MediaStreamControllerButton
+                onClick={() => {
+                  handleCamToggle(false);
+                }}
+              >
+                <CamOnIcon width={"20px"} height="20px" />
+              </MediaStreamControllerButton>
+            ) : (
+              <MediaStreamControllerButton
+                onClick={() => {
+                  handleCamToggle(true);
+                }}
+              >
+                <CamOffIcon width={"20px"} height="20px" />
+              </MediaStreamControllerButton>
+            )}
+            {cons.audio ? (
+              <MediaStreamControllerButton
+                onClick={() => handleMicToggle(false)}
+              >
+                <MicOnIcon width={"20px"} height="20px" />
+              </MediaStreamControllerButton>
+            ) : (
+              <MediaStreamControllerButton
+                onClick={() => handleMicToggle(true)}
+              >
+                <MicOffIcon width={"20px"} height="20px" />
+              </MediaStreamControllerButton>
+            )}
+          </div>
         </section>
+
         <section className="videoCard">
           <video
             ref={remoteVideoRef}
             autoPlay
             style={{
               margin: 2,
-              backgroundColor: "black",
             }}
           />
         </section>

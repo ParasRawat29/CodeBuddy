@@ -42,6 +42,7 @@ app.use("/room", roomRoutes);
 
 //   let socketIdMapUsername = {};
 let socketIdMapUsername = new Map();
+let socketIdMapPeerId = new Map();
 //   const maximum = 4;
 
 function getAllRooms() {
@@ -105,7 +106,6 @@ io.on("connection", (socket) => {
     socketIdMapUsername.set(socket.id, username);
     //   socketIdMapUsername[socket.id] = username
     socket.join(roomId);
-    /* notify every user in the room that XXXXXXX has joined the room */
     const clients = getAllConnectedClients(roomId, io);
 
     //   console.log("all rooms : ", getAllRooms());
@@ -149,34 +149,38 @@ io.on("connection", (socket) => {
     }
   );
 
-  // socket.on(ACTIONS.JOIN_VIDEO, ({ roomId }) => {
-  //   console.log("join video called for room id : ", roomId);
-  //   const clients = getAllConnectedClients(roomId);
-  //   clients.forEach((client) => {
-  //     io.to(client.socketId).emit(ACTIONS.ALL_USERS, { clients });
-  //   });
-  // });
+  socket.on(ACTIONS.SET_PEER_ID, ({ id, roomId }) => {
+    socketIdMapPeerId.set(socket.id, id);
+    socket.emit("peerId_Created");
+    const clients = getAllConnectedClients(roomId, io);
+    clients.forEach((client) => {
+      socket
+        .to(client.socketId)
+        .emit(ACTIONS.NEW_PEER_JOINED_CALL_ME_FOR_PEER_LIST);
+    });
+  });
 
-  // socket.on(ACTIONS.OFFER, ({ sdp }) => {
-  //   console.log("in offer");
-  //   socket.broadcast.emit(ACTIONS.GET_OFFER, { sdp });
-  // });
-
-  // socket.on(ACTIONS.ANSWER, ({ sdp }) => {
-  //   console.log("in answer");
-  //   socket.broadcast.emit(ACTIONS.GET_ANSWER, { sdp });
-  // });
-
-  // socket.on(ACTIONS.CANDIDATE, ({ candidate }) => {
-  //   console.log("in candidate", candidate);
-  //   socket.broadcast.emit(ACTIONS.GET_CANDIDATE, { candidate });
-  // });
+  socket.on(ACTIONS.GET_ALL_USERS_PEERID, ({ roomId }) => {
+    const clients = getAllConnectedClients(roomId, io);
+    const name = socketIdMapUsername.get(socket.id);
+    console.log("name ", name);
+    let allPeers = [];
+    clients.forEach((client) => {
+      if (client.socketId !== socket.id) {
+        const peerId = socketIdMapPeerId.get(client.socketId);
+        allPeers.push(peerId);
+      }
+    });
+    console.log("all peers", allPeers);
+    socket.emit(ACTIONS.ALL_USERS_PEERID, { allPeers });
+  });
 
   socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];
     rooms.forEach((rid) => {
       socket.in(rid).emit(ACTIONS.DISCONNECTED, {
         socketId: socket.id,
+        peerID: socketIdMapPeerId.get(socket.id),
         //   username: socketIdMapUsername[socket.id],
         username: socketIdMapUsername.get(socket.id),
       });

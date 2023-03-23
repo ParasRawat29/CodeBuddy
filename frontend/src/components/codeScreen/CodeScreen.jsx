@@ -111,6 +111,7 @@ function CodeScreen() {
             if (location.state !== username) {
               alert.success(`${username} joined the room`);
             }
+
             // emit event to server to sync code on join
 
             if (currentUser !== joinedUserSocketId) {
@@ -219,7 +220,7 @@ function CodeScreen() {
         }}
       >
         <OutputComp socketRef={socketRef} />
-        {/* <Videos /> */}
+        <Videos socketRef={socketRef} roomId={roomId} />
       </section>
     </div>
   );
