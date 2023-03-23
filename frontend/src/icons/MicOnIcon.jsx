@@ -6,7 +6,7 @@ function MicOnIcon({ width, height, ...styles }) {
       <svg
         width={width}
         height={height}
-        viewBox="0 0 20 21"
+        viewBox="0 0 14 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >

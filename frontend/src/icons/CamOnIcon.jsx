@@ -6,7 +6,7 @@ function CamOnIcon({ width, height, ...styles }) {
       <svg
         width={width}
         height={height}
-        viewBox="0 0 22 22"
+        viewBox="0 0 20 16"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
