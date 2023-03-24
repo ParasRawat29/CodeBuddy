@@ -31,14 +31,23 @@ exports.validateRoom = catchAsyncError((req, res, next) => {
 
 exports.validateRoomToJoin = catchAsyncError((req, res, next) => {
   let { id } = req.params;
-  if (index.validateRoomExist(id)) {
-    res.status(200).json({
-      success: true,
-    });
-  } else {
+
+  if (!index.validateRoomExist(id)) {
     res.status(200).json({
       success: false,
       message: "No such room exist",
     });
+    return;
   }
+
+  if (index.getRoomSize(id) >= 2) {
+    res.status(200).json({
+      success: false,
+      message: "Room is full",
+    });
+    return;
+  }
+  res.status(200).json({
+    success: true,
+  });
 });

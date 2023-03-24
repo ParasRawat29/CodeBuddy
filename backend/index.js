@@ -221,5 +221,5 @@ app.use(errorHandler);
 module.exports.isRoomIdEmpty = isRoomIdEmpty;
 module.exports.validateRoomId = validateRoomId;
 module.exports.validateRoomExist = validateRoomExist;
-
+module.exports.getRoomSize = getRoomSize;
 module.exports.app = app;
